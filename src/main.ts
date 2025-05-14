@@ -61,7 +61,7 @@ async function getAddress(id: number): Promise<Actress | null> {
     const response = await fetch(`https://boolean-spec-frontend.vercel.app/freetestapi/actresses/${id}`);
     const dati: unknown = await response.json();
     if (!isActress(dati)) {
-    throw new Error("formato dei dati non valido");
+    throw new Error("Formato dei dati non valido");
   }
   return dati;
   } catch (error) {
@@ -71,5 +71,27 @@ async function getAddress(id: number): Promise<Actress | null> {
       console.error("Errore sconosciuto:", error);
     }
     return null;
+  }
+}
+
+async function getAllActresses(): Promise<Actress[]> {
+  try {
+    const response = await fetch(`https://boolean-spec-frontend.vercel.app/freetestapi/actresses`);
+    if (!response.ok) {
+      throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
+    }
+    const dati: unknown = await response.json();
+    if (!(dati instanceof Array)) {
+          throw new Error("Formato dei dati non valido: non è un array");
+    }
+    const attricivalide = dati.filter(isActress);
+    return attricivalide
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Errore durante il recupero dell'attrice:", error);
+    } else {
+      console.error("Errore sconosciuto:", error);
+    }
+    return [];
   }
 }
